@@ -124,7 +124,7 @@ with st.sidebar:
     c1, c2, c3 = st.columns(3)
     color_fondo = c1.color_picker("Fondo", "#0b1120")
     color_tarjeta = c2.color_picker("Tarjetas", "#1e293b")
-    color_primario = c3.color_picker("Acentos", "#38bdf8")
+    color_primario = c3.color_picker("Letras y Bordes", "#38bdf8")
     tema = {'bg': color_fondo, 'card_bg': color_tarjeta, 'primary': color_primario, 'glow': f"{color_primario}66", 'text': "#f8fafc"}
 
     css_global = f"""
