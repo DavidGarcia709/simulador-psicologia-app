@@ -37,6 +37,19 @@ if "caos" not in st.session_state.progreso_minijuegos:
 # =========================================================================
 # FUNCIONES DE GUARDADO DIRECTO EN SUPABASE
 # =========================================================================
+def añadir_exp(monto):
+    """Actualiza la barra de EXP visualmente al instante y sincroniza con Supabase"""
+    if st.session_state.user_data is not None:
+        st.session_state.user_data["xp_total"] = st.session_state.user_data.get("xp_total", 0) + monto
+        st.session_state.user_data["nivel"] = max(1, st.session_state.user_data["xp_total"] // 500 + 1)
+        if st.session_state.logged_in and st.session_state.user_id:
+            try:
+                auth_db.supabase.table("usuarios").update({
+                    "xp_total": st.session_state.user_data["xp_total"],
+                    "nivel": st.session_state.user_data["nivel"]
+                }).eq("id", st.session_state.user_id).execute()
+            except: pass
+    
 def normalizar_minijuegos(datos_mini):
     if not isinstance(datos_mini, dict):
         return {"dictamen": [], "caos": []}
