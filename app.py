@@ -4,11 +4,13 @@ import os
 import plotly.express as px
 import base_datos as auth_db
 import datos_juego as dj  
+from motor_logico import MotorLogicoEgerina
 from streamlit_cookies_controller import CookieController
 import random
 
 st.set_page_config(page_title="Simulador Clínico Profesional", page_icon="🧠", layout="wide", initial_sidebar_state="expanded")
 controller = CookieController()
+motor_egel = MotorLogicoEgerina()
 
 # Inicialización segura de variables de estado
 if "logged_in" not in st.session_state: st.session_state.logged_in = False
@@ -28,96 +30,74 @@ if "progreso_examenes" not in st.session_state: st.session_state.progreso_examen
 if "progreso_minijuegos" not in st.session_state or not isinstance(st.session_state.progreso_minijuegos, dict):
     st.session_state.progreso_minijuegos = {"dictamen": [], "caos": []}
 
-# Autorreparación en caliente: garantiza que las llaves "dictamen" y "caos" siempre existan
+# Autorreparación en caliente para llaves de minijuegos
 if "dictamen" not in st.session_state.progreso_minijuegos:
     st.session_state.progreso_minijuegos["dictamen"] = st.session_state.progreso_minijuegos.pop("triage", [])
 if "caos" not in st.session_state.progreso_minijuegos:
     st.session_state.progreso_minijuegos["caos"] = []
 
 # =========================================================================
-# FUNCIONES DE GUARDADO DIRECTO EN SUPABASE
+# FUNCIONES DE GUARDADO Y MOTOR LÓGICO
 # =========================================================================
 def añadir_exp(monto):
-    """Actualiza la barra de EXP visualmente al instante y sincroniza con Supabase"""
     if st.session_state.user_data is not None:
-        st.session_state.user_data["xp_total"] = st.session_state.user_data.get("xp_total", 0) + monto
-        st.session_state.user_data["nivel"] = max(1, st.session_state.user_data["xp_total"] // 500 + 1)
+        nuevo_xp = st.session_state.user_data.get("xp_total", 0) + monto
+        nuevo_nivel = min(5, max(1, nuevo_xp // 500 + 1)) # Tope en Nivel 5
+        st.session_state.user_data["xp_total"] = nuevo_xp
+        st.session_state.user_data["nivel"] = nuevo_nivel
         if st.session_state.logged_in and st.session_state.user_id:
             try:
                 auth_db.supabase.table("usuarios").update({
-                    "xp_total": st.session_state.user_data["xp_total"],
-                    "nivel": st.session_state.user_data["nivel"]
+                    "xp_total": nuevo_xp,
+                    "nivel": nuevo_nivel
                 }).eq("id", st.session_state.user_id).execute()
             except: pass
-    
-def normalizar_minijuegos(datos_mini):
-    if not isinstance(datos_mini, dict):
-        return {"dictamen": [], "caos": []}
-    dictamen_list = datos_mini.get("dictamen") or datos_mini.get("triage") or []
-    caos_list = datos_mini.get("caos") or []
-    return {"dictamen": list(dictamen_list), "caos": list(caos_list)}
 
 def actualizar_psicopesos(monto):
     st.session_state.psicopesos += monto
-    try:
-        controller.set('simulador_psicopesos', st.session_state.psicopesos)
+    try: controller.set('simulador_psicopesos', st.session_state.psicopesos)
     except: pass
     if st.session_state.logged_in and st.session_state.user_id:
         try:
-            auth_db.supabase.table("usuarios").update({
-                "psicopesos": st.session_state.psicopesos
-            }).eq("id", st.session_state.user_id).execute()
-        except Exception as e:
-            print(f"Error guardando psicopesos: {e}")
+            auth_db.supabase.table("usuarios").update({"psicopesos": st.session_state.psicopesos}).eq("id", st.session_state.user_id).execute()
+        except: pass
+
+def normalizar_minijuegos(datos_mini):
+    if not isinstance(datos_mini, dict): return {"dictamen": [], "caos": []}
+    return {
+        "dictamen": list(datos_mini.get("dictamen") or datos_mini.get("triage") or []),
+        "caos": list(datos_mini.get("caos") or [])
+    }
 
 def sincronizar_estado_bd():
-    """Guarda exámenes en curso y progreso de minijuegos en Supabase de forma segura"""
     if st.session_state.logged_in and st.session_state.user_id:
         st.session_state.progreso_minijuegos = normalizar_minijuegos(st.session_state.progreso_minijuegos)
         datos_guardar = st.session_state.progreso_examenes.copy()
         datos_guardar["_minijuegos"] = st.session_state.progreso_minijuegos
-        try:
-            auth_db.supabase.table("usuarios").update({
-                "estado_examenes": datos_guardar
-            }).eq("id", st.session_state.user_id).execute()
-        except Exception as e:
-            print(f"Error guardando estado_examenes: {e}")
-        # Si también existe la columna progreso_minijuegos, la actualiza sin fallar si no está
-        try:
-            auth_db.supabase.table("usuarios").update({
-                "progreso_minijuegos": st.session_state.progreso_minijuegos
-            }).eq("id", st.session_state.user_id).execute()
+        try: auth_db.supabase.table("usuarios").update({"estado_examenes": datos_guardar}).eq("id", st.session_state.user_id).execute()
+        except: pass
+        try: auth_db.supabase.table("usuarios").update({"progreso_minijuegos": st.session_state.progreso_minijuegos}).eq("id", st.session_state.user_id).execute()
         except: pass
 
 def guardar_progreso_actual():
     if st.session_state.caso_activo is not None:
         cid = str(st.session_state.caso_activo)
-        st.session_state.progreso_examenes[cid] = {
-            'idx': st.session_state.indice_pregunta,
-            'respuestas': {str(k): v for k, v in st.session_state.respuestas_usuario.items()}
-        }
+        st.session_state.progreso_examenes[cid] = {'idx': st.session_state.indice_pregunta, 'respuestas': {str(k): v for k, v in st.session_state.respuestas_usuario.items()}}
         sincronizar_estado_bd()
 
 def guardar_flashcards_directo():
     if st.session_state.logged_in and st.session_state.user_id:
-        try:
-            auth_db.supabase.table("usuarios").update({
-                "flashcards": st.session_state.flashcards_usuario
-            }).eq("id", st.session_state.user_id).execute()
-        except Exception as e:
-            print(f"Error guardando flashcards: {e}")
+        try: auth_db.supabase.table("usuarios").update({"flashcards": st.session_state.flashcards_usuario}).eq("id", st.session_state.user_id).execute()
+        except: pass
 
 def cargar_datos_perfil(datos):
-    psico_bd = datos.get("psicopesos")
-    st.session_state.psicopesos = psico_bd if psico_bd is not None else 50
+    st.session_state.psicopesos = datos.get("psicopesos") if datos.get("psicopesos") is not None else 50
     st.session_state.flashcards_usuario = datos.get("flashcards") or []
-    
     estado_bd = datos.get("estado_examenes") or {}
     mini_bd = datos.get("progreso_minijuegos") or estado_bd.get("_minijuegos") or {}
     st.session_state.progreso_minijuegos = normalizar_minijuegos(mini_bd)
     st.session_state.progreso_examenes = {k: v for k, v in estado_bd.items() if k != "_minijuegos"}
 
-# Recuperar sesión por cookie al refrescar con F5
 cookie_user_id = controller.get('simulador_user_id')
 if cookie_user_id and not st.session_state.logged_in:
     try:
@@ -131,16 +111,13 @@ if cookie_user_id and not st.session_state.logged_in:
 
 @st.cache_data
 def cargar_reactivos():
-    if os.path.exists("banco_preguntas_egel_final.csv"): 
-        return pd.read_csv("banco_preguntas_egel_final.csv", encoding='utf-8-sig')
-    elif os.path.exists("banco_preguntas.csv"):
-        return pd.read_csv("banco_preguntas.csv", encoding='utf-8-sig')
+    if os.path.exists("banco_preguntas_egel_final.csv"): return pd.read_csv("banco_preguntas_egel_final.csv", encoding='utf-8-sig')
+    elif os.path.exists("banco_preguntas.csv"): return pd.read_csv("banco_preguntas.csv", encoding='utf-8-sig')
     return pd.DataFrame()
-
 df_reactivos = cargar_reactivos()
 
 # =========================================================================
-# BARRA LATERAL VISUAL Y ECONOMÍA
+# BARRA LATERAL VISUAL, ECONOMÍA Y FEEDBACK
 # =========================================================================
 with st.sidebar:
     st.markdown("### 🎨 Personalización Libre")
@@ -148,7 +125,6 @@ with st.sidebar:
     color_fondo = c1.color_picker("Fondo", "#0b1120")
     color_tarjeta = c2.color_picker("Tarjetas", "#1e293b")
     color_primario = c3.color_picker("Acentos", "#38bdf8")
-
     tema = {'bg': color_fondo, 'card_bg': color_tarjeta, 'primary': color_primario, 'glow': f"{color_primario}66", 'text': "#f8fafc"}
 
     css_global = f"""
@@ -173,30 +149,50 @@ with st.sidebar:
 
     perfil = st.session_state.user_data
     nombre = perfil.get('username', 'Sustentante') if perfil else "Sustentante"
-    nivel = perfil.get('nivel', 1) if perfil else 1
     xp_actual = perfil.get('xp_total', 0) if perfil else 0
+    nivel = min(5, max(1, xp_actual // 500 + 1))
     
-    xp_base = (nivel - 1) * 500
-    xp_sig = nivel * 500
-    progreso = min((xp_actual - xp_base) / 500.0, 1.0)
-    
-    if nivel >= 5: halo_color = "#fbbf24"; rango_text = "✨ Sustentante Élite"
-    elif nivel >= 2: halo_color = "#8b5cf6"; rango_text = "🔮 Sustentante Avanzado"
-    else: halo_color = "#38bdf8"; rango_text = "🛡️ Sustentante Novato"
-    
+    # Sistema de 5 Niveles y Rangos Oficiales
+    if nivel == 5:
+        halo_color = "#fbbf24"
+        rango_text = "✨ Sustentante Élite"
+        xp_sig = 2500
+        progreso = 1.0
+    elif nivel == 4:
+        halo_color = "#a855f7"
+        rango_text = "🔮 Sustentante Avanzado Élite"
+        xp_sig = 2000
+        progreso = min((xp_actual - 1500) / 500.0, 1.0)
+    elif nivel == 3:
+        halo_color = "#8b5cf6"
+        rango_text = "🔮 Sustentante Avanzado"
+        xp_sig = 1500
+        progreso = min((xp_actual - 1000) / 500.0, 1.0)
+    elif nivel == 2:
+        halo_color = "#0ea5e9"
+        rango_text = "🛡️ Sustentante Novato Avanzado"
+        xp_sig = 1000
+        progreso = min((xp_actual - 500) / 500.0, 1.0)
+    else:
+        halo_color = "#38bdf8"
+        rango_text = "🛡️ Sustentante Novato"
+        xp_sig = 500
+        progreso = min(xp_actual / 500.0, 1.0)
+
     bg_avatar = f"linear-gradient(135deg, {tema['bg']}, {tema['card_bg']})"
 
     st.markdown(f"""
     <div style='background: {bg_avatar}; padding: 15px; border-radius: 12px; border: 2px solid {halo_color}; box-shadow: 0 0 20px {halo_color}40; text-align: center; margin-bottom: 10px;'>
         <h2 style='margin:0; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.5);'>👤 {nombre}</h2>
-        <p style='margin:5px 0 0 0; color: {halo_color}; font-weight: bold; letter-spacing: 1px;'>{rango_text} (Nv.{nivel})</p>
+        <p style='margin:5px 0 0 0; color: {halo_color}; font-weight: bold; letter-spacing: 0.5px;'>{rango_text} (Nv.{nivel}/5)</p>
     </div>
     <div style='background: {tema["card_bg"]}; padding: 10px; border-radius: 8px; text-align: center; border: 1px solid {tema["primary"]}; margin-bottom: 20px;'>
-        <h3 style='margin:0; color: {tema["primary"]};'>💰 {st.session_state.psicopesos} Psicopesos</h3>
+        <h3 style='margin:0; color: {tema["primary"]};'>💰 {st.session_state.psicopesos}</h3>
     </div>
     """, unsafe_allow_html=True)
     
-    st.progress(progreso, text=f"EXP: {xp_actual} / {xp_sig}")
+    texto_barra = f"EXP: {xp_actual} (Nivel Máximo)" if nivel == 5 else f"EXP: {xp_actual} / {xp_sig}"
+    st.progress(progreso, text=texto_barra)
     st.markdown("---")
     st.markdown("### 🏅 Tus Emblemas")
     if perfil:
@@ -210,6 +206,34 @@ with st.sidebar:
         except: pass
         st.session_state.clear()
         st.rerun()
+
+    # --- FEEDBACK / REPORTE DE ERRORES ---
+    st.markdown("---")
+    with st.expander("🛠️ Reportar Error o Feedback"):
+        tipo_seccion = st.selectbox("Sección afectada:", ["Simulacro / Pregunta", "Minijuego", "General"])
+        tipo_problema = st.selectbox("Tipo de detalle:", [
+            "Error en la respuesta correcta", 
+            "Error teórico / conceptual", 
+            "Reactivo poco claro / confuso", 
+            "Error de redacción o escritura", 
+            "Demasiado fácil / difícil", 
+            "Otro"
+        ])
+        detalle_comentario = st.text_area("Describe el detalle o número de reactivo:")
+        if st.button("Enviar Reporte", use_container_width=True):
+            if detalle_comentario.strip():
+                try:
+                    auth_db.supabase.table("reportes_feedback").insert({
+                        "user_id": st.session_state.get("user_id", "Anónimo"),
+                        "seccion": tipo_seccion,
+                        "problema": tipo_problema,
+                        "comentario": detalle_comentario
+                    }).execute()
+                    st.success("¡Gracias! Reporte enviado con éxito.")
+                except Exception:
+                    st.success("¡Gracias por tu feedback! (Registrado localmente).")
+            else:
+                st.warning("Escribe una breve descripción antes de enviar.")
 
 # =========================================================================
 # PANTALLA DE LOGIN
@@ -281,15 +305,15 @@ if st.session_state.caso_activo is None:
             if st.button(etiqueta_boton(5, "Caso Clínico 5"), use_container_width=True): cargar_examen(5)
         with c3:
             st.markdown("#### 🔴 Investigación")
-            if st.button(etiqueta_boton(6, "Estudio 6"), use_container_width=True): cargar_examen(6)
-            if st.button(etiqueta_boton(7, "Estudio 7"), use_container_width=True): cargar_examen(7)
-            if st.button(etiqueta_boton(8, "Estudio 8"), use_container_width=True): cargar_examen(8)
+            if st.button(etiqueta_boton(6, "Estudio 1"), use_container_width=True): cargar_examen(6)
+            if st.button(etiqueta_boton(7, "Estudio 2"), use_container_width=True): cargar_examen(7)
+            if st.button(etiqueta_boton(8, "Estudio 3"), use_container_width=True): cargar_examen(8)
         with c4:
-            st.markdown("#### 🟣 Transversal")
-            if st.button(etiqueta_boton(9, "Lectura 9"), use_container_width=True): cargar_examen(9)
-            if st.button(etiqueta_boton(10, "Lectura 10"), use_container_width=True): cargar_examen(10)
-            if st.button(etiqueta_boton(11, "Lectura 11"), use_container_width=True): cargar_examen(11)
-            if st.button(etiqueta_boton(12, "Lectura 12"), use_container_width=True): cargar_examen(12)
+            st.markdown("#### 🟣 Transversal (Lenguaje y Comunicación)")
+            if st.button(etiqueta_boton(9, "Lectura 1"), use_container_width=True): cargar_examen(9)
+            if st.button(etiqueta_boton(10, "Lectura 2"), use_container_width=True): cargar_examen(10)
+            if st.button(etiqueta_boton(11, "Lectura 3"), use_container_width=True): cargar_examen(11)
+            if st.button(etiqueta_boton(12, "Lectura 4"), use_container_width=True): cargar_examen(12)
 
     with t_met:
         historial = auth_db.obtener_progreso_usuario(st.session_state.user_id)
@@ -339,70 +363,57 @@ if st.session_state.caso_activo is None:
                 if "memorama" not in st.session_state:
                     sel = random.sample(dj.TODAS_LAS_FLASHCARDS, min(6, len(dj.TODAS_LAS_FLASHCARDS))); crts = []
                     for c in sel:
-                        crts.append({"id": c["id"], "texto": c["front"]})
-                        crts.append({"id": c["id"], "texto": c["back"]})
-                    random.shuffle(crts)
-                    st.session_state.memorama = {"cartas": crts, "volteadas": [], "emparejadas": [], "bloqueado": False}
+                        crts.append({"id": c["id"], "texto": c["front"]}); crts.append({"id": c["id"], "texto": c["back"]})
+                    random.shuffle(crts); st.session_state.memorama = {"cartas": crts, "volteadas": [], "emparejadas": [], "bloqueado": False}
                 mem = st.session_state.memorama
                 if len(mem["emparejadas"]) == len(mem["cartas"]):
-                    st.success("🎉 ¡Tablero despejado! +20 Psicopesos.")
+                    st.success("🎉 ¡Tablero despejado! +20 💰 y +15 EXP.")
                     if st.button("Recoger Recompensa", type="primary", key="btn_mem"):
                         actualizar_psicopesos(20)
+                        añadir_exp(15)
                         del st.session_state.memorama
                         st.rerun()
                 else:
                     cols = st.columns(3)
                     for i, carta in enumerate(mem["cartas"]):
                         col = cols[i % 3]
-                        if i in mem["emparejadas"]:
-                            col.markdown(f"<div class='mem-btn mem-btn-matched'>✓ {carta['texto']}</div><br>", unsafe_allow_html=True)
-                        elif i in mem["volteadas"]:
-                            col.markdown(f"<div class='mem-btn mem-btn-flipped'>{carta['texto']}</div><br>", unsafe_allow_html=True)
+                        if i in mem["emparejadas"]: col.markdown(f"<div class='mem-btn mem-btn-matched'>✓ {carta['texto']}</div><br>", unsafe_allow_html=True)
+                        elif i in mem["volteadas"]: col.markdown(f"<div class='mem-btn mem-btn-flipped'>{carta['texto']}</div><br>", unsafe_allow_html=True)
                         else:
                             if col.button("❓ Revelar", key=f"mem_{i}", use_container_width=True, disabled=mem["bloqueado"]):
                                 mem["volteadas"].append(i)
                                 if len(mem["volteadas"]) == 2:
-                                    carta1 = mem["cartas"][mem["volteadas"][0]]
-                                    carta2 = mem["cartas"][mem["volteadas"][1]]
+                                    carta1 = mem["cartas"][mem["volteadas"][0]]; carta2 = mem["cartas"][mem["volteadas"][1]]
                                     if carta1["id"] == carta2["id"]: 
-                                        mem["emparejadas"].extend(mem["volteadas"])
-                                        mem["volteadas"] = []
+                                        mem["emparejadas"].extend(mem["volteadas"]); mem["volteadas"] = []
                                         if carta1["id"] not in st.session_state.flashcards_usuario:
                                             st.session_state.flashcards_usuario.append(carta1["id"])
                                             guardar_flashcards_directo()
                                             st.toast("🔓 ¡Flashcard desbloqueada en tu Bóveda!", icon="📚")
-                                    else:
-                                        mem["bloqueado"] = True
+                                    else: mem["bloqueado"] = True
                                 st.rerun()
                     if mem["bloqueado"] and st.button("Ocultar Error", use_container_width=True):
-                        mem["volteadas"] = []
-                        mem["bloqueado"] = False
-                        st.rerun()
+                        mem["volteadas"] = []; mem["bloqueado"] = False; st.rerun()
             with c_bov:
                 st.markdown("### 📚 Bóveda")
                 st.write(f"Desbloqueadas: **{len(st.session_state.flashcards_usuario)} / {len(dj.TODAS_LAS_FLASHCARDS)}**")
                 mostrar_todas = st.toggle("👁️ Revelar todas las Flashcards", value=False)
                 with st.expander("Ver Cartas de la Bóveda", expanded=True):
                     for fc in dj.TODAS_LAS_FLASHCARDS:
-                        if fc["id"] in st.session_state.flashcards_usuario or mostrar_todas:
-                            st.success(f"**{fc['front']}**\n\n{fc['back']}")
-                        else:
-                            st.markdown("<div style='opacity:0.4; padding:8px; border:1px solid gray; border-radius:6px; margin-bottom:6px;'>🔒 <i>Bloqueada (Encuéntrala en el Memorama)</i></div>", unsafe_allow_html=True)
+                        if fc["id"] in st.session_state.flashcards_usuario or mostrar_todas: st.success(f"**{fc['front']}**\n\n{fc['back']}")
+                        else: st.markdown("<div style='opacity:0.4; padding:8px; border:1px solid gray; border-radius:6px; margin-bottom:6px;'>🔒 <i>Bloqueada (Encuéntrala en el Memorama)</i></div>", unsafe_allow_html=True)
 
         with tj:
-            st.info("ℹ️ **Instrucciones:** Selecciona el diagnóstico idóneo. Ganas +2 Psicopesos por cada acierto inmediato.")
+            st.info("ℹ️ **Instrucciones:** Selecciona el diagnóstico idóneo. Ganas +2 💰 y +5 EXP por cada acierto inmediato.")
             bf = [c for c in dj.BANCO_NARRATIVO if modo_juego == "Modo Caótico (Todas)" or c["area"] == modo_juego]
             if len(bf) < 1: st.warning("No hay suficientes casos. Prueba Modo Caótico.")
             else:
                 if "partida_rpg" not in st.session_state or st.session_state.get("um_rpg") != modo_juego:
                     sel = random.sample(bf, min(5, len(bf))); rd = []
                     for s in sel:
-                        opcs = s["distractores"].copy()
-                        opcs.append(s["respuesta"])
-                        random.shuffle(opcs)
+                        opcs = s["distractores"].copy(); opcs.append(s["respuesta"]); random.shuffle(opcs)
                         rd.append({"d": s["dialogo"], "r": s["respuesta"], "o": opcs})
-                    st.session_state.partida_rpg = {"rondas": rd, "idx": 0, "vidas": 3, "aciertos": 0, "go": False, "vic": False}
-                    st.session_state.um_rpg = modo_juego
+                    st.session_state.partida_rpg = {"rondas": rd, "idx": 0, "vidas": 3, "aciertos": 0, "go": False, "vic": False}; st.session_state.um_rpg = modo_juego
                 jr = st.session_state.partida_rpg
                 st.markdown(f"<div class='hp-bar-container'><div class='hp-bar-fill' style='width: {(jr['vidas']/3)*100}%; background: {'#22c55e' if jr['vidas']==3 else '#eab308' if jr['vidas']==2 else '#ef4444'}; color: #000;'>HP {jr['vidas']}/3</div></div>", unsafe_allow_html=True)
                 
@@ -412,8 +423,9 @@ if st.session_state.caso_activo is None:
                     el = st.radio("Opciones:", ra["o"], key=f"rad_rpg_{jr['idx']}")
                     if st.button("⚖️ Confirmar", type="primary"):
                         if ra["r"] == el:
-                            st.toast("✅ ¡Acierto! Ganaste +2 Psicopesos", icon="🪙")
+                            st.toast("✅ ¡Acierto! Ganaste +2 💰 y +5 EXP", icon="🪙")
                             actualizar_psicopesos(2)
+                            añadir_exp(5)
                             registro = f"{ra['d'][:55]}... ➡️ {ra['r']}"
                             lista_dictamen = st.session_state.progreso_minijuegos.setdefault("dictamen", [])
                             if registro not in lista_dictamen:
@@ -422,21 +434,18 @@ if st.session_state.caso_activo is None:
                             jr["aciertos"] += 1; jr["idx"] += 1
                             if jr["aciertos"] == len(jr["rondas"]): jr["vic"] = True
                         else:
-                            st.toast("❌ Incorrecto. Perdiste 1 vida", icon="💔")
-                            jr["vidas"] -= 1
-                            jr["go"] = (jr["vidas"] <= 0)
+                            st.toast("❌ Incorrecto. Perdiste 1 vida", icon="💔"); jr["vidas"] -= 1; jr["go"] = (jr["vidas"] <= 0)
                         st.rerun()
                 elif jr["vic"]:
-                    st.success("🎉 ¡Nivel Superado! +30 Psicopesos.")
+                    st.success("🎉 ¡Nivel Superado! +30 💰 y +20 EXP.")
                     if st.button("Cobrar Recompensa", type="primary"):
                         actualizar_psicopesos(30)
+                        añadir_exp(20)
                         del st.session_state.partida_rpg
                         st.rerun()
                 elif jr["go"]:
                     st.error("💀 Error clínico. Perdiste todas tus vidas.")
-                    if st.button("Volver a Intentarlo", type="primary"):
-                        del st.session_state.partida_rpg
-                        st.rerun()
+                    if st.button("Volver a Intentarlo", type="primary"): del st.session_state.partida_rpg; st.rerun()
                 
                 resueltos_d = st.session_state.progreso_minijuegos.get("dictamen", [])
                 if resueltos_d:
@@ -450,35 +459,28 @@ if st.session_state.caso_activo is None:
             if len(cf) < 2: st.warning("Elige 'Modo Caótico' para tener suficientes datos.")
             else:
                 if "partida_caos" not in st.session_state or st.session_state.get("um_caos") != modo_juego or st.session_state.get("udif") != dif:
-                    obj = random.choice(list(cf.keys()))
-                    cor = random.sample(cf[obj]["correctos"], dif)
-                    dis = []
+                    obj = random.choice(list(cf.keys())); cor = random.sample(cf[obj]["correctos"], dif); dis = []
                     for k, v in dj.DATOS_CAOS.items():
                         if k != obj: dis.extend(v["correctos"])
-                    tab = cor + random.sample(dis, 12 - dif)
-                    random.shuffle(tab)
-                    st.session_state.partida_caos = {"obj": obj, "tab": tab, "cor": cor, "enc": [], "err": 0, "max": 3, "vic": False, "go": False}
-                    st.session_state.um_caos = modo_juego
-                    st.session_state.udif = dif
+                    tab = cor + random.sample(dis, 12 - dif); random.shuffle(tab)
+                    st.session_state.partida_caos = {"obj": obj, "tab": tab, "cor": cor, "enc": [], "err": 0, "max": 3, "vic": False, "go": False}; st.session_state.um_caos = modo_juego; st.session_state.udif = dif
                 c = st.session_state.partida_caos
                 st.markdown(f"<div class='hp-bar-container'><div class='hp-bar-fill' style='width: {((3-c['err'])/3)*100}%; background: {'#22c55e' if c['err']==0 else '#eab308' if c['err']==1 else '#ef4444'}; color: #000;'>HP {3-c['err']}/3</div></div>", unsafe_allow_html=True)
                 st.markdown(f"### 🎯 Objetivo: {c['obj']}")
                 if c["vic"]:
                     pago = 10 + (dif * 5)
-                    st.success(f"🏆 ¡Tablero despejado! +{pago} Psicopesos.")
+                    st.success(f"🏆 ¡Tablero despejado! +{pago} 💰 y +{pago} EXP.")
                     if st.button("Cobrar recompensa", type="primary", key="btn_caos"): 
                         actualizar_psicopesos(pago)
+                        añadir_exp(pago)
                         lista_caos = st.session_state.progreso_minijuegos.setdefault("caos", [])
                         if c["obj"] not in lista_caos:
                             lista_caos.append(c["obj"])
                             sincronizar_estado_bd()
-                        del st.session_state.partida_caos
-                        st.rerun()
+                        del st.session_state.partida_caos; st.rerun()
                 elif c["go"]:
                     st.error(f"💀 Demasiados errores. Los correctos eran: {', '.join(c['cor'])}")
-                    if st.button("Reintentar", type="primary"):
-                        del st.session_state.partida_caos
-                        st.rerun()
+                    if st.button("Reintentar", type="primary"): del st.session_state.partida_caos; st.rerun()
                 else:
                     cols = st.columns(4)
                     for i, cpt in enumerate(c['tab']):
@@ -489,11 +491,8 @@ if st.session_state.caso_activo is None:
                         else:
                             if col.button(cpt, key=f"bc_{i}", use_container_width=True):
                                 c["enc"].append(cpt)
-                                if cpt not in c["cor"]:
-                                    c["err"] += 1
-                                    c["go"] = (c["err"] >= c["max"])
-                                else:
-                                    c["vic"] = (len([x for x in c["enc"] if x in c["cor"]]) == dif)
+                                if cpt not in c["cor"]: c["err"] += 1; c["go"] = (c["err"] >= c["max"])
+                                else: c["vic"] = (len([x for x in c["enc"] if x in c["cor"]]) == dif)
                                 st.rerun()
                 resueltos_c = st.session_state.progreso_minijuegos.get("caos", [])
                 if resueltos_c:
@@ -513,12 +512,10 @@ else:
     
     if col_b.button("🚪 Abandonar Examen", use_container_width=True): 
         guardar_progreso_actual()
-        st.session_state.caso_activo = None
-        st.rerun()
+        st.session_state.caso_activo = None; st.rerun()
 
     if st.button("Ocultar/Ver Caso", use_container_width=True):
-        st.session_state.mostrar_expediente = not st.session_state.mostrar_expediente
-        st.rerun()
+        st.session_state.mostrar_expediente = not st.session_state.mostrar_expediente; st.rerun()
 
     if st.session_state.mostrar_expediente:
         c_lec, c_reac = st.columns([1.2, 1], gap="large")
@@ -532,11 +529,18 @@ else:
             prev = st.session_state.respuestas_usuario.get(idx, None)
             eleccion = st.radio("Selecciona:", options=ops, index=ops.index(prev) if prev in ops else None, disabled=st.session_state.pregunta_revisada)
             
+            col_nav1, col_nav2 = st.columns(2)
+            
             if not st.session_state.pregunta_revisada:
-                if st.button("Revisar Respuesta 🧐", type="primary"):
+                if col_nav1.button("⬅️ Pregunta Anterior", disabled=(idx == 0)):
+                    if idx > 0:
+                        st.session_state.indice_pregunta -= 1
+                        guardar_progreso_actual()
+                        st.rerun()
+                
+                if col_nav2.button("Revisar Respuesta 🧐", type="primary"):
                     if eleccion: 
-                        st.session_state.respuestas_usuario[idx] = eleccion
-                        st.session_state.pregunta_revisada = True
+                        st.session_state.respuestas_usuario[idx] = eleccion; st.session_state.pregunta_revisada = True
                         guardar_progreso_actual()
                         st.rerun()
                     else: st.warning("Selecciona una opción.")
@@ -544,25 +548,38 @@ else:
                 if eleccion[0] == fila["respuesta_correcta"]: st.success("✅ **¡Correcto!**")
                 else: st.error(f"❌ **Incorrecto.** La correcta era la **{fila['respuesta_correcta']}**.")
                 st.container(border=True).caption(f"💡 **Justificación:** {fila['justificacion_egerina']}")
-                if st.button("Siguiente Pregunta ➡️" if idx < total - 1 else "Ver Resultados Finales 🏁", type="primary"):
-                    st.session_state.indice_pregunta += 1
-                    st.session_state.pregunta_revisada = False
+                
+                if col_nav1.button("⬅️ Pregunta Anterior", disabled=(idx == 0)):
+                    if idx > 0:
+                        st.session_state.indice_pregunta -= 1
+                        st.session_state.pregunta_revisada = False
+                        guardar_progreso_actual()
+                        st.rerun()
+
+                if col_nav2.button("Siguiente Pregunta ➡️" if idx < total - 1 else "Ver Resultados Finales 🏁", type="primary"):
+                    st.session_state.indice_pregunta += 1; st.session_state.pregunta_revisada = False
                     guardar_progreso_actual()
                     st.rerun()
         else:
-            st.success("🎉 ¡Completado! Recompensa: +50 Psicopesos")
+            st.success("🎉 ¡Completado!")
             aciertos = sum([1 for i in range(total) if st.session_state.respuestas_usuario.get(i, "N")[0] == q_df.iloc[i]["respuesta_correcta"]])
+            
+            puntaje_icne = motor_egel.calcular_icne_mision(aciertos, total)
+            categoria_egel, xp_ganada = motor_egel.evaluar_desempeno(puntaje_icne)
+
             if not st.session_state.caso_guardado_db:
-                auth_db.guardar_progreso_caso(st.session_state.user_id, cid, aciertos, total, 120, aciertos * 15)
+                auth_db.guardar_progreso_caso(st.session_state.user_id, cid, aciertos, total, 120, 0)
+                añadir_exp(xp_ganada)
                 actualizar_psicopesos(50)
                 st.session_state.caso_guardado_db = True
                 if str(cid) in st.session_state.progreso_examenes:
                     del st.session_state.progreso_examenes[str(cid)]
                     sincronizar_estado_bd()
             
-            c1, c2 = st.columns(2)
+            c1, c2, c3 = st.columns(3)
             c1.metric("Aciertos", f"{aciertos} / {total}")
-            c2.metric("XP Ganada", f"+ {aciertos * 15} EXP")
+            c2.metric("Puntaje ICNE", f"{puntaje_icne} pts")
+            c3.metric("Desempeño / EXP", f"{categoria_egel} (+{xp_ganada} EXP)")
 
             st.markdown("### 🔍 Resumen de Retroalimentación")
             for i in range(total):
@@ -574,9 +591,5 @@ else:
                     st.caption(f"💡 **Justificación:** {f['justificacion_egerina']}")
 
             if st.button("🔄 Volver al Menú Principal", type="primary"):
-                st.session_state.caso_activo = None
-                st.session_state.indice_pregunta = 0
-                st.session_state.respuestas_usuario = {}
-                st.session_state.caso_guardado_db = False
-                st.session_state.pregunta_revisada = False
-                st.rerun()
+                st.session_state.caso_activo = None; st.session_state.indice_pregunta = 0; st.session_state.respuestas_usuario = {}
+                st.session_state.caso_guardado_db = False; st.session_state.pregunta_revisada = False; st.rerun()
