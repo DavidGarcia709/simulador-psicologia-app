@@ -207,7 +207,7 @@ with st.sidebar:
         st.session_state.clear()
         st.rerun()
 
-    # --- FEEDBACK / REPORTE DE ERRORES ---
+    # --- FEEDBACK / REPORTE DE ERRORES POR CORREO ---
     st.markdown("---")
     with st.expander("🛠️ Reportar Error o Feedback"):
         tipo_seccion = st.selectbox("Sección afectada:", ["Simulacro / Pregunta", "Minijuego", "General"])
@@ -220,18 +220,35 @@ with st.sidebar:
             "Otro"
         ])
         detalle_comentario = st.text_area("Describe el detalle o número de reactivo:")
+        
         if st.button("Enviar Reporte", use_container_width=True):
             if detalle_comentario.strip():
+                import urllib.request
+                import urllib.parse
+                import json
+
+                CORREO_DESTINO = "dilan4869@gmail.com"  # <-- correo de alertas
+                url = f"https://formsubmit.co/ajax/{CORREO_DESTINO}"
+                
+                usuario_reporta = perfil.get("username", "Sustentante") if perfil else "Anónimo"
+                datos_correo = {
+                    "_subject": f"🚨 Feedback Simulador EGEL: {tipo_seccion}",
+                    "Usuario": usuario_reporta,
+                    "Seccion": tipo_seccion,
+                    "Tipo_de_Detalle": tipo_problema,
+                    "Mensaje": detalle_comentario
+                }
+
                 try:
-                    auth_db.supabase.table("reportes_feedback").insert({
-                        "user_id": st.session_state.get("user_id", "Anónimo"),
-                        "seccion": tipo_seccion,
-                        "problema": tipo_problema,
-                        "comentario": detalle_comentario
-                    }).execute()
-                    st.success("¡Gracias! Reporte enviado con éxito.")
-                except Exception:
-                    st.success("¡Gracias por tu feedback! (Registrado localmente).")
+                    data = urllib.parse.urlencode(datos_correo).encode("utf-8")
+                    req = urllib.request.Request(url, data=data, headers={"Accept": "application/json", "User-Agent": "Mozilla/5.0"})
+                    with urllib.request.urlopen(req, timeout=10) as resp:
+                        if resp.status == 200:
+                            st.success("¡Reporte enviado a tu correo con éxito!")
+                        else:
+                            st.error("Hubo un problema al enviar el correo. Intenta más tarde.")
+                except Exception as e:
+                    st.error(f"Error de conexión al enviar reporte: {e}")
             else:
                 st.warning("Escribe una breve descripción antes de enviar.")
 
