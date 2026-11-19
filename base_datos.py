@@ -32,8 +32,23 @@ def iniciar_sesion(email: str, password: str):
     try:
         res = supabase.auth.sign_in_with_password({"email": email, "password": password})
         if res.user:
-            datos_usuario = supabase.table("usuarios").select("*").eq("id", res.user.id).single().execute()
-            return True, res.user, datos_usuario.data
+            consulta = supabase.table("usuarios").select("*").eq("id", res.user.id).execute()
+            if consulta.data and len(consulta.data) > 0:
+                return True, res.user, consulta.data[0]
+            
+            # Si el usuario existe en Auth pero no tiene fila en 'usuarios', la creamos al vuelo
+            nuevo_perfil = {
+                "id": res.user.id,
+                "username": email.split("@")[0],
+                "nivel": 1,
+                "xp_total": 0,
+                "psicopesos": 50,
+                "flashcards": [],
+                "estado_examenes": {}
+            }
+            insertado = supabase.table("usuarios").insert(nuevo_perfil).execute()
+            datos_finales = insertado.data[0] if insertado.data else nuevo_perfil
+            return True, res.user, datos_finales
         return False, None, "Credenciales inválidas."
     except Exception as e:
         return False, None, str(e)
