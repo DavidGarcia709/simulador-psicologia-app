@@ -153,8 +153,6 @@ with st.sidebar:
     nombre = perfil.get('username', 'Sustentante') if perfil else "Sustentante"
     xp_actual = perfil.get('xp_total', 0) if perfil else 0
     nivel = min(5, max(1, xp_actual // 500 + 1))
-    
-    with st.sidebar:
     # ... tu código de Personalización Libre ...
 
     # Sistema de 5 Niveles y Rangos Oficiales (con 4 espacios de sangría)
