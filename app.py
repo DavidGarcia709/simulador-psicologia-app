@@ -10,7 +10,7 @@ import random
 import urllib.request
 import urllib.parse
 
-st.set_page_config(page_title="Simulador Clínico Profesional", page_icon="🧠", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Simulador Psicología", page_icon="🧠", layout="wide", initial_sidebar_state="expanded")
 controller = CookieController()
 motor_egel = MotorLogicoEgerina()
 
