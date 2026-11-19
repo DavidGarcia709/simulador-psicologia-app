@@ -358,9 +358,9 @@ if st.session_state.caso_activo is None:
         c_pet, c_store = st.columns([1, 1.5])
         ts = st.session_state.tamagotchi_stats
         with c_pet:
-            emo = "🐱" if ts["satisfacción"] > 40 and ts["felicidad"] > 40 else "🐱💤" if ts["satisfacción"] <= 20 else "🐱💔"
+            emo = "🐱" if ts["hambre"] > 40 and ts["felicidad"] > 40 else "🐱💤" if ts["hambre"] <= 20 else "🐱💔"
             st.markdown(f"<div style='font-size: 100px; text-align: center; padding: 20px; background: {tema['card_bg']}; border-radius: 15px; border: 2px solid {tema['primary']}; box-shadow: 0 0 15px {tema['glow']};'>{emo}</div>", unsafe_allow_html=True)
-            st.write("**Satisfacción:**"); st.progress(ts["satisfacción"]/100.0)
+            st.write("**Hambre:**"); st.progress(ts["hambre"]/100.0)
             st.write("**Felicidad:**"); st.progress(ts["felicidad"]/100.0)
         with c_store:
             st.subheader("🏪 Tienda")
