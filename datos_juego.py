@@ -18,7 +18,8 @@ TODAS_LAS_FLASHCARDS = [
     {"id": "F15", "front": "Test de Apercepción Infantil (CAT)", "back": "Usa figuras de animales o humanas para evaluar fantasías y problemas específicos"},
     {"id": "F16", "front": "Test de Illinois", "back": "Habilidades psicolingüísticas; se evalúa su pertinencia de uso, no sus datos"},
     {"id": "F17", "front": "Test de Atención D2", "back": "Se interpretan sus puntuaciones en forma de percentiles de velocidad y precisión"},
-    {"id": "F18", "front": "Entrevista No Estructurada", "back": "Formato conversacional; no hay preguntas, temas definidos ni orden"},]
+    {"id": "F18", "front": "Entrevista No Estructurada", "back": "Indagación abierta sin guion previo, donde el entrevistado marca libremente el ritmo y los tópicos del diálogo"},
+]
 
 CASOS_CLINICOS = {
     1: {
@@ -28,7 +29,7 @@ CASOS_CLINICOS = {
 * **Nombre:** Javier R. | **Edad:** 34 años.
 * **Ocupación:** Ingeniero de Software (Arquitecto de bases de datos).
 * **Derivación:** Remitido con carácter de urgencia por psiquiatría.
-* **Motivo de Consulta (Textual):** *"El psiquiatra me dijo que necesito pia urgente porque mis pastillas ya no son suficientes. Llevo semanas sin dormir más de dos horas seguidas. Siento que mi cerebro es un motor que no se puede apagar; si no reviso el código de mi trabajo una y otra vez, estoy convencido de que los servidores del banco colapsarán, millones de personas perderán su dinero y yo iré a la cárcel. Sé que suena exagerado, pero la angustia me está destruyendo físicamente"*.
+* **Motivo de Consulta (Textual):** *"El psiquiatra me dijo que necesito terapia urgente porque mis pastillas ya no son suficientes. Llevo semanas sin dormir más de dos horas seguidas. Siento que mi cerebro es un motor que no se puede apagar; si no reviso el código de mi trabajo una y otra vez, estoy convencido de que los servidores del banco colapsarán, millones de personas perderán su dinero y yo iré a la cárcel. Sé que suena exagerado, pero la angustia me está destruyendo físicamente"*.
 
 **II. Historia del Padecimiento Actual**
 El cuadro comenzó hace dos años y se exacerbó dramáticamente tras su divorcio hace 8 meses. Relata intrusión constante de imágenes mentales catastróficas y pensamientos que él reconoce como irracionales, pero no puede detener.
@@ -43,7 +44,7 @@ Madre con ansiedad generalizada no tratada; padre militar punitivo. Históricame
 
 **V. Examen Mental Inicial y Dilema Ético**
 Descuido en aliño personal, evita tocar pomos de puertas. Discurso prolijo; utiliza vocabulario técnico para racionalizar sus emociones. Afecto restringido y depresivo.
-* **Dilema Ético:** Recursos Humanos contacta al peuta exigiendo su "diagnóstico exacto" para decidir si le retiran credenciales de seguridad informática."""
+* **Dilema Ético:** Recursos Humanos contacta al terapeuta exigiendo su "diagnóstico exacto" para decidir si le retiran credenciales de seguridad informática."""
     },
     2: {
         "titulo": "Caso Clínico 2",
@@ -63,7 +64,7 @@ Marcha normativa a los 12 meses; ligero retraso de lenguaje a los 3 años (corre
 
 **IV. Observación Conductual y Dilema Ético**
 Socialización preservada; excelente exposición oral. En lectoescritura muestra inquietud motora y verbaliza *"soy la más tonta"*.
-* **Dilema Ético:** El padre exige al psicólogo alr el informe para dictaminar que el rezago es culpa exclusiva de la negligencia materna, buscando anexarlo como prueba en el juicio."""
+* **Dilema Ético:** El padre exige al psicólogo alterar el informe para dictaminar que el rezago es culpa exclusiva de la negligencia materna, buscando anexarlo como prueba en el juicio."""
     },
     3: {
         "titulo": "Caso Clínico 3",
@@ -96,11 +97,11 @@ Previo a firmar su dirección operativa, llegó tarde y fue hostil con sus super
 Padre descalificador (*"nunca estarás a la altura"*); madre sumisa que lo usó como confidente contra el esposo. Siente inconscientemente que superar a su padre es una traición.
 
 **III. Encuadre y Proceso Analítico**
-Reglas fijas (2 sesiones semanales). Se le instruye a verbalizar sin censura todo lo que venga a su mente. El peuta mantiene una escucha neutral no directiva.
+Reglas fijas (2 sesiones semanales). Se le instruye a verbalizar sin censura todo lo que venga a su mente. El terapeuta mantiene una escucha neutral no directiva.
 Ernesto relata un sueño: un hombre sin rostro de traje negro derriba una torre de cajas que él construyó. Analizan que el hombre de traje fusiona a su jefe actual y a su padre.
 
 **IV. Evolución Transferencial**
-Al sexto mes, ataca al peuta acusándolo de *"arrogante que busca humillarlo"*. El clínico no se defiende; controla sus emociones y le señala cómo está repitiendo en el consultorio la misma sumisión y hostilidad de su infancia. Esto provoca un impacto profundo en Ernesto, permitiéndole asimilar lógicamente el origen de su autosabotaje."""
+Al sexto mes, ataca al terapeuta acusándolo de *"arrogante que busca humillarlo"*. El clínico no se defiende; controla sus emociones y le señala cómo está repitiendo en el consultorio la misma sumisión y hostilidad de su infancia. Esto provoca un impacto profundo en Ernesto, permitiéndole asimilar lógicamente el origen de su autosabotaje."""
     },
     5: {
         "titulo": "Caso Clínico 5",
@@ -109,13 +110,13 @@ Al sexto mes, ataca al peuta acusándolo de *"arrogante que busca humillarlo"*. 
 * **Integrantes:** Roberto (Padre, 45), Carmen (Madre, 42), Santiago (Hijo, 14).
 * **Motivo:** *"Santiago está insoportable, contesta a maestros y reprobó. Es el único problema que tenemos en la familia"*.
 
-**II. Pautas de Incción y Dinámica Actual**
+**II. Pautas de Interacción y Dinámica Actual**
 Secuencia repetitiva: Padre reprende $\\rightarrow$ Madre desautoriza y minimiza falta del hijo $\\rightarrow$ Padre se enoja y aísla $\\rightarrow$ Hijo reincide.
-Padres con distanciamiento íntimo severo de 2 años al borde de la separación. Cada vez que la tensión matrimonial amenaza con divorcio, el hijo comete una falta escolar grave, obligando a los padres a unirse temporalmente para resolverlo. La fron de privacidad madre-hijo es inexistente, mientras la del padre es rígida y periférica. En la sesión 2 se usó una gráfica transgeneracional para mapear la historia familiar.
+Padres con distanciamiento íntimo severo de 2 años al borde de la separación. Cada vez que la tensión matrimonial amenaza con divorcio, el hijo comete una falta escolar grave, obligando a los padres a unirse temporalmente para resolverlo. La frontera de privacidad madre-hijo es inexistente, mientras la del padre es rígida y periférica. En la sesión 2 se usó una gráfica transgeneracional para mapear la historia familiar.
 
 **III. Técnicas Aplicadas**
 * Se les obliga a discutir en vivo la hora de llegada del hijo (*"háblenlo entre ustedes ahora mismo"*).
-* El peuta interviene físicamente: bloquea a la madre y exige al padre acercarse para negociar la regla en equipo.
+* El terapeuta interviene físicamente: bloquea a la madre y exige al padre acercarse para negociar la regla en equipo.
 * Intervención verbal: *"Santiago no es rebelde; está sacrificando su éxito para mantenerlos ocupados y evitar su divorcio"*.
 Al ceder el síntoma del hijo, la verdadera crisis conyugal emerge y los padres continúan solos el tratamiento."""
     },
@@ -166,7 +167,7 @@ Entrevistas con preguntas abiertas y guion flexible. El equipo detuvo el recluta
 3. El investigador principal anotó en un cuaderno sus propios prejuicios y emociones ante el llanto de los deudos para no contaminar su interpretación.
 
 **IV. Consideraciones Bioéticas**
-El comité de ética obligó a establecer un protocolo de contención emocional en caso de reactivación traumática durante las entrevistas. Se alron nombres y lugares en el reporte para imposibilitar la identificación de los participantes."""
+El comité de ética obligó a establecer un protocolo de contención emocional en caso de reactivación traumática durante las entrevistas. Se alteraron nombres y lugares en el reporte para imposibilitar la identificación de los participantes."""
     },
     9: {
         "titulo": "Lectura Transversal 1",
@@ -190,7 +191,7 @@ El departamento de Servicios Escolares y Bienestar Estudiantil de la Universidad
 
 Al aplicar la encuesta de salida a los alumnos que abandonaron sus carreras, los datos mostraron que el 60% de este grupo de desertores señaló "sufrir crisis de ansiedad clínica recurrentes" como la causa principal para tramitar su baja. 
 
-Al cruzar estos datos con las cifras del centro de atención psicológica interno, se identificó un patrón de búsqueda de ayuda diferencial por género: por cada hombre que agenda una sesión de pia, hay tres mujeres que lo hacen (proporción 3:1 a favor del género femenino). En el mes crítico de marzo, la clínica documentó un total de 160 atenciones brindadas en 30 días.
+Al cruzar estos datos con las cifras del centro de atención psicológica interno, se identificó un patrón de búsqueda de ayuda diferencial por género: por cada hombre que agenda una sesión de terapia, hay tres mujeres que lo hacen (proporción 3:1 a favor del género femenino). En el mes crítico de marzo, la clínica documentó un total de 160 atenciones brindadas en 30 días.
 
 El Decano de la Facultad de Ciencias Exactas, preocupado por las estadísticas, convocó a una junta y declaró ante el consejo de profesores la siguiente norma lógica: *"Está estadísticamente comprobado que si un alumno sufre ansiedad clínica severa, entonces reprobará irremediablemente el semestre"*. Acto seguido, el coordinador de carrera levantó la mano y confirmó: *"Le informo que el alumno Carlos M. acaba de reprobar el semestre en su totalidad"*, a lo que el Decano concluyó dando un golpe en la mesa: *"Ahí lo tienen. Es un hecho indiscutible que Carlos M. sufre de ansiedad clínica severa"*. 
 
@@ -216,17 +217,17 @@ La neutralidad matemática es un mito peligroso cuando el modelo estadístico se
 
 El censo anual de la clínica comunitaria reporta una población total de 2,000 estudiantes atendidos en el ciclo vigente. Del total de ingresos, el 45% fue diagnosticado con Trastorno de Ansiedad Generalizada (TAG) y el 25% con un Episodio Depresivo Mayor (EDM).
 
-Durante una auditoría, el director del centro estableció la siguiente premisa clínica ante los médicos internos: *"Si un paciente no recibe intervención péutica oportuna, entonces su cuadro clínico se cronificará inevitablemente"*. Al revisar expedientes, el asistente notó que el cuadro de la paciente Laura se había cronificado, y dictaminó tajantemente que Laura era la prueba empírica de que no se le dio intervención a tiempo. 
+Durante una auditoría, el director del centro estableció la siguiente premisa clínica ante los médicos internos: *"Si un paciente no recibe intervención terapéutica oportuna, entonces su cuadro clínico se cronificará inevitablemente"*. Al revisar expedientes, el asistente notó que el cuadro de la paciente Laura se había cronificado, y dictaminó tajantemente que Laura era la prueba empírica de que no se le dio intervención a tiempo. 
 
-En cuanto a la distribución del presupuesto hospitalario, las reglas de la clínica estipulan que por cada $5 pesos invertidos en el departamento de psiquiatría, se deben invertir $2 pesos en el departamento de pia cognitivo-conductual (TCC). El presupuesto mensual total que se debe repartir íntegramente entre ambos departamentos suma $140,000 pesos exactos.
+En cuanto a la distribución del presupuesto hospitalario, las reglas de la clínica estipulan que por cada $5 pesos invertidos en el departamento de psiquiatría, se deben invertir $2 pesos en el departamento de terapia cognitivo-conductual (TCC). El presupuesto mensual total que se debe repartir íntegramente entre ambos departamentos suma $140,000 pesos exactos.
 
-Para el programa de prevención de adicciones de la próxima semana, el protocolo exige formar grupos focales de pia. Se cuenta con un padrón exclusivo de 6 peutas capacitados, pero cada grupo focal solo puede ser dirigido por un equipo de exactamente 4 peutas trabajando de forma simultánea.
+Para el programa de prevención de adicciones de la próxima semana, el protocolo exige formar grupos focales de terapia. Se cuenta con un padrón exclusivo de 6 terapeutas capacitados, pero cada grupo focal solo puede ser dirigido por un equipo de exactamente 4 terapeutas trabajando de forma simultánea.
 
 Finalmente, el registro de urgencias psiquiátricas indica una alarmante alza en las atenciones por crisis de pánico. Hace dos meses se atendieron 15 crisis; el mes pasado la cifra subió a 45, y el departamento de proyección estadística asume que el próximo mes se atenderán 135 crisis si la tendencia no se interrumpe con medidas drásticas."""
     }
 }
 
-BANCO_NARRATIVO= [
+BANCO_NARRATIVO = [
     # =================================================================
     # ÁREA 1: EVALUACIÓN PSICOLÓGICA (PSICOPATOLOGÍA Y DIAGNÓSTICO)
     # =================================================================
@@ -244,7 +245,7 @@ BANCO_NARRATIVO= [
     },
     {
         "area": "Evaluación Psicológica", 
-        "dialogo": "«Paciente sobrevivió a un accidente automovilístico grave hace 3 meses. Hoy reporta pesadillas recurrentes (reexperimentación del miedo), anhedonia, alciones del sueño y se niega a subir a cualquier vehículo.»", 
+        "dialogo": "«Paciente sobrevivió a un accidente automovilístico grave hace 3 meses. Hoy reporta pesadillas recurrentes (reexperimentación del miedo), anhedonia, alteraciones del sueño y se niega a subir a cualquier vehículo.»", 
         "respuesta": "Trastorno de Estrés Postraumático (TEPT)", 
         "distractores": ["Trastorno de Adaptación (Agudo)", "Trastorno de Ansiedad por Separación", "Trastorno de Pánico"]
     },
@@ -326,7 +327,7 @@ BANCO_NARRATIVO= [
     },
     {
         "area": "Evaluación Psicológica", 
-        "dialogo": "«Paciente de 52 años en duelo complicado. El evaluador necesita explorar insomnio y anhedonia, pero deja que ella exprese libremente su rabia saltando de un tema a otro en la consulta.»", 
+        "dialogo": "«Ejecutivo de 29 años acude por agotamiento laboral. El clínico lleva una lista de áreas obligatorias por explorar (sueño, consumo de café, carga horaria), pero adapta el orden y agrega preguntas según lo que el paciente relata.»", 
         "respuesta": "Entrevista Semiestructurada", 
         "distractores": ["Entrevista Directiva Estructurada", "Entrevista No Estructurada", "Asociación Libre (Psicoanálisis)"]
     },
@@ -338,7 +339,7 @@ BANCO_NARRATIVO= [
     },
     {
         "area": "Evaluación Psicológica", 
-        "dialogo": "«Niño de 8 años con antecedentes de parto prematuro, rezago escolar en matemáticas y torpeza motora. Requiere evaluación integral de inteligencia y posible daño neurológico.»", 
+        "dialogo": "«Niña de 10 años canalizada por inversión persistente de figuras geométricas, desorganización espacial en cuadernos y sospecha de asimetría cognitiva. Se requiere evaluar perfil intelectual y madurez visomotora.»", 
         "respuesta": "WISC-IV y Test de Bender", 
         "distractores": ["Rorschach y Test de la Figura Humana", "Frases incompletas de Sacks y Persona bajo la lluvia", "WAIS-IV y Test de Dominós D-48"]
     },
@@ -350,7 +351,7 @@ BANCO_NARRATIVO= [
     },
     {
         "area": "Evaluación Psicológica", 
-        "dialogo": "«Hombre de 81 años con olvidos recurrentes, extravíos en la calle y aislamiento social. Se requiere evaluar rápidamente si existe deterioro cognitivo antes de una batería neuropsicológica.»", 
+        "dialogo": "«Profesor jubilado de 74 años es llevado por su hija: repite las mismas preguntas en lapsos de diez minutos y se desorientó al volver del mercado. Se busca una evaluación breve inicial antes de aplicar pruebas neuropsicológicas extensas.»", 
         "respuesta": "Escalas de tamizaje (ej. Mini-Mental / MoCA)", 
         "distractores": ["MMPI-2-RF", "Inventario BATTELLE", "Test de Illinois de Habilidades Psicolingüísticas"]
     },
@@ -360,93 +361,93 @@ BANCO_NARRATIVO= [
     # =================================================================
     {
         "area": "Intervención", 
-        "dialogo": "«Paciente con TOC severo (lavado de manos hasta sangrar). El peuta le indica tocar los pomos de las puertas del consultorio y le prohíbe realizar el ritual de lavado.»", 
+        "dialogo": "«Paciente con TOC severo (lavado de manos hasta sangrar). El terapeuta le indica tocar los pomos de las puertas del consultorio y le prohíbe realizar el ritual de lavado.»", 
         "respuesta": "TCC (Exposición con Prevención de Respuesta)", 
-        "distractores": ["Psicoanálisis (Análisis del trauma)", "pia Gestalt (Silla vacía)", "pia Sistémica (Reestructuración)"]
+        "distractores": ["Psicoanálisis (Análisis del trauma)", "Terapia Gestalt (Silla vacía)", "Terapia Sistémica (Reestructuración)"]
     },
     {
         "area": "Intervención", 
         "dialogo": "«Los padres no se hablan tras el divorcio; la madre le dice al hijo adolescente: 'Dile a tu padre que nos dé dinero', y el padre le responde insultos a través de él.»", 
-        "respuesta": "pia Sistémica (Triangulación)", 
-        "distractores": ["TCC (Modificación de conducta)", "Psicoanálisis (Complejo de Edipo)", "pia Humanista (Empatía)"]
+        "respuesta": "Terapia Sistémica (Triangulación)", 
+        "distractores": ["TCC (Modificación de conducta)", "Psicoanálisis (Complejo de Edipo)", "Terapia Humanista (Empatía)"]
     },
     {
         "area": "Intervención", 
-        "dialogo": "«El paciente se enfurece súbitamente porque el peuta miró el reloj: '¡Eres igual de exigente e insensible que mi jefe y mi padre, a nadie le importo!'.»", 
+        "dialogo": "«El paciente se enfurece súbitamente porque el terapeuta miró el reloj: '¡Eres igual de exigente e insensible que mi jefe y mi padre, a nadie le importo!'.»", 
         "respuesta": "Psicoanálisis (Análisis de la Transferencia)", 
-        "distractores": ["TCC (Control de la ira)", "pia Breve Centrada en Soluciones", "pia de Aceptación y Compromiso"]
+        "distractores": ["TCC (Control de la ira)", "Terapia Breve Centrada en Soluciones", "Terapia de Aceptación y Compromiso"]
     },
     {
         "area": "Intervención", 
-        "dialogo": "«'Si repruebo este examen de titulación, significa que soy un fracaso absoluto en la vida y nunca lograré nada'. El peuta busca debatir esta evidencia.»", 
+        "dialogo": "«'Si repruebo este examen de titulación, significa que soy un fracaso absoluto en la vida y nunca lograré nada'. El terapeuta busca debatir esta evidencia.»", 
         "respuesta": "TCC (Reestructuración de Distorsiones Cognitivas)", 
-        "distractores": ["pia Existencial", "Psicoanálisis (Catarsis)", "pia Narrativa"]
+        "distractores": ["Terapia Existencial", "Psicoanálisis (Catarsis)", "Terapia Narrativa"]
     },
     {
         "area": "Intervención", 
-        "dialogo": "«Familia con hija adolescente con insomnio por ansiedad. El peuta instruye: 'Esta semana te prohíbo dormir; debes quedarte despierta toda la noche vigilando la casa'.»", 
-        "respuesta": "pia Sistémica (Intervención Paradójica)", 
-        "distractores": ["TCC (Higiene del sueño)", "pia Gestalt (Darse cuenta)", "Psicoanálisis (Interpretación)"]
+        "dialogo": "«Familia con hija adolescente con insomnio por ansiedad. El terapeuta instruye: 'Esta semana te prohíbo dormir; debes quedarte despierta toda la noche vigilando la casa'.»", 
+        "respuesta": "Terapia Sistémica (Intervención Paradójica)", 
+        "distractores": ["TCC (Higiene del sueño)", "Terapia Gestalt (Darse cuenta)", "Psicoanálisis (Interpretación)"]
     },
     {
         "area": "Intervención", 
         "dialogo": "«El paciente describe con voz monótona cómo su esposa lo abandonó, pero está apretando fuertemente los puños. El clínico le pide que preste atención a sus manos en este momento.»", 
-        "respuesta": "pia Gestalt (Fomento del 'Darse cuenta' / Aquí y Ahora)", 
-        "distractores": ["Psicoanálisis (Asociación Libre)", "TCC (Relajación Muscular)", "pia Centrada en el Cliente"]
+        "respuesta": "Terapia Gestalt (Fomento del 'Darse cuenta' / Aquí y Ahora)", 
+        "distractores": ["Psicoanálisis (Asociación Libre)", "TCC (Relajación Muscular)", "Terapia Centrada en el Cliente"]
     },
     {
         "area": "Intervención", 
         "dialogo": "«Paciente con Trastorno Límite de la Personalidad (TLP) presenta desregulación emocional severa, escisión e ideación suicida crónica. Requiere entrenamiento en tolerancia al malestar.»", 
-        "respuesta": "pia Dialéctica Conductual (DBT)", 
-        "distractores": ["Psicoanálisis Clásico", "pia Familiar Estructural", "pia Racional Emotiva (TREC)"]
+        "respuesta": "Terapia Dialéctica Conductual (DBT)", 
+        "distractores": ["Psicoanálisis Clásico", "Terapia Familiar Estructural", "Terapia Racional Emotiva (TREC)"]
     },
     {
         "area": "Intervención", 
-        "dialogo": "«Niño con ira incontrolable. El peuta instruye: 'Vamos a dibujar al Monstruo del Enojo. ¿Qué te susurra el Monstruo al oído para que pierdas el control?'.»", 
-        "respuesta": "pia Narrativa (Externalización del Síntoma)", 
-        "distractores": ["TCC (Economía de fichas)", "pia Gestalt (Role-play)", "Psicoanálisis (pia de juego)"]
+        "dialogo": "«Niño con ira incontrolable. El terapeuta instruye: 'Vamos a dibujar al Monstruo del Enojo. ¿Qué te susurra el Monstruo al oído para que pierdas el control?'.»", 
+        "respuesta": "Terapia Narrativa (Externalización del Síntoma)", 
+        "distractores": ["TCC (Economía de fichas)", "Terapia Gestalt (Role-play)", "Psicoanálisis (Terapia de juego)"]
     },
     {
         "area": "Intervención", 
-        "dialogo": "«El peuta pregunta en la primera sesión: 'Imagina que esta noche ocurre un milagro y tu problema desaparece. Al despertar, ¿cuál sería la primera señal del milagro?'.»", 
-        "respuesta": "pia Breve Centrada en Soluciones (Pregunta Milagro)", 
-        "distractores": ["TCC (Ensayo conductual)", "Logopia (Sentido de Vida)", "pia Sistémica (Excepción)"]
+        "dialogo": "«El terapeuta pregunta en la primera sesión: 'Imagina que esta noche ocurre un milagro y tu problema desaparece. Al despertar, ¿cuál sería la primera señal del milagro?'.»", 
+        "respuesta": "Terapia Breve Centrada en Soluciones (Pregunta Milagro)", 
+        "distractores": ["TCC (Ensayo conductual)", "Logoterapia (Sentido de Vida)", "Terapia Sistémica (Excepción)"]
     },
     {
         "area": "Intervención", 
         "dialogo": "«La madre lee el diario de su hija de 16 años, suelen vestir de forma idéntica y la madre utiliza frases como: 'Nosotras estamos en la preparatoria y nos duele la cabeza'.»", 
-        "respuesta": "pia Sistémica (Límites Difusos / Familia Aglutinada)", 
+        "respuesta": "Terapia Sistémica (Límites Difusos / Familia Aglutinada)", 
         "distractores": ["Psicoanálisis (Simbiosis)", "TCC (Entrenamiento Asertivo)", "Gestalt (Confluencia)"]
     },
     {
         "area": "Intervención", 
-        "dialogo": "«Paciente con fobia a volar. El peuta enseña relajación muscular progresiva y luego lo hace imaginar que compra un boleto, subiendo la ansiedad gradualmente en una jerarquía.»", 
+        "dialogo": "«Paciente con fobia a volar. El terapeuta enseña relajación muscular progresiva y luego lo hace imaginar que compra un boleto, subiendo la ansiedad gradualmente en una jerarquía.»", 
         "respuesta": "TCC (Desensibilización Sistemática)", 
-        "distractores": ["EMDR", "pia de Aceptación y Compromiso", "Psicoanálisis (Análisis de evitación)"]
+        "distractores": ["EMDR", "Terapia de Aceptación y Compromiso", "Psicoanálisis (Análisis de evitación)"]
     },
     {
         "area": "Intervención", 
-        "dialogo": "«'Siento que soy horrible, nadie me quiere'. El peuta responde: 'Sientes un peso inmenso y doloroso sobre ti en este momento, estoy aquí contigo y te acepto'.»", 
-        "respuesta": "pia Humanista (Empatía y Aceptación Incondicional)", 
-        "distractores": ["TCC (Validación cognitiva)", "Psicoanálisis (Contratransferencia)", "pia Racional Emotiva (TREC)"]
+        "dialogo": "«'Siento que soy horrible, nadie me quiere'. El terapeuta responde: 'Sientes un peso inmenso y doloroso sobre ti en este momento, estoy aquí contigo y te acepto'.»", 
+        "respuesta": "Terapia Humanista (Empatía y Aceptación Incondicional)", 
+        "distractores": ["TCC (Validación cognitiva)", "Psicoanálisis (Contratransferencia)", "Terapia Racional Emotiva (TREC)"]
     },
     {
         "area": "Intervención", 
         "dialogo": "«El paciente lleva un mes cancelando sesiones de último minuto o cambiando abruptamente de tema de conversación cada vez que se menciona a su hermano fallecido.»", 
         "respuesta": "Psicoanálisis (Análisis de la Resistencia)", 
-        "distractores": ["TCC (Falta de adherencia)", "pia Breve (Falta de motivación)", "pia Sistémica (Homeostasis)"]
+        "distractores": ["TCC (Falta de adherencia)", "Terapia Breve (Falta de motivación)", "Terapia Sistémica (Homeostasis)"]
     },
     {
         "area": "Intervención", 
         "dialogo": "«Un hombre lidera campañas públicas agresivas contra la homosexualidad, mientras secretamente lucha con impulsos homosexuales inaceptables para su propia moral.»", 
         "respuesta": "Psicoanálisis (Mecanismo de Formación Reactiva)", 
-        "distractores": ["TCC (Disonancia Cognitiva)", "pia Gestalt (Proyección)", "pia Existencial (Negación)"]
+        "distractores": ["TCC (Disonancia Cognitiva)", "Terapia Gestalt (Proyección)", "Terapia Existencial (Negación)"]
     },
     {
         "area": "Intervención", 
-        "dialogo": "«Paciente con Depresión Mayor severa. No sale de la cama hace semanas. Antes de intentar cambiar sus pensamientos, el peuta le asigna la tarea de levantarse a tomar agua.»", 
+        "dialogo": "«Paciente con Depresión Mayor severa. No sale de la cama hace semanas. Antes de intentar cambiar sus pensamientos, el terapeuta le asigna la tarea de levantarse a tomar agua.»", 
         "respuesta": "TCC (Activación Conductual)", 
-        "distractores": ["Psicoanálisis (Elaboración del duelo)", "Logopia (Sentido de vida)", "pia Sistémica (Ruptura del patrón)"]
+        "distractores": ["Psicoanálisis (Elaboración del duelo)", "Logoterapia (Sentido de vida)", "Terapia Sistémica (Ruptura del patrón)"]
     },
 
     # =================================================================
@@ -484,7 +485,7 @@ BANCO_NARRATIVO= [
     },
     {
         "area": "Investigación", 
-        "dialogo": "«Se prueba la eficacia de una nueva pia en un hospital. No es posible asignar pacientes al azar, por lo que se utilizan los grupos intactos ya formados (turno matutino vs vespertino).»", 
+        "dialogo": "«Se prueba la eficacia de una nueva terapia en un hospital. No es posible asignar pacientes al azar, por lo que se utilizan los grupos intactos ya formados (turno matutino vs vespertino).»", 
         "respuesta": "Diseño Cuasiexperimental", 
         "distractores": ["Diseño Experimental Puro", "Diseño Correlacional", "Estudio Ex Post Facto"]
     },
@@ -496,7 +497,7 @@ BANCO_NARRATIVO= [
     },
     {
         "area": "Investigación", 
-        "dialogo": "«En los salarios de una clínica, el dueño gana 500,000 al mes, y los 50 peutas ganan 6,000. Ante valores tan atípicos, ¿cuál es la medida de tendencia central más representativa?»", 
+        "dialogo": "«En los salarios de una clínica, el dueño gana 500,000 al mes, y los 50 terapeutas ganan 6,000. Ante valores tan atípicos, ¿cuál es la medida de tendencia central más representativa?»", 
         "respuesta": "La Mediana", 
         "distractores": ["La Media (Promedio Matemático)", "La Moda", "La Desviación Estándar"]
     },
@@ -546,16 +547,17 @@ BANCO_NARRATIVO= [
         "area": "Investigación", 
         "dialogo": "«Dos psicólogos observan a un niño en cámara de Gesell y califican por separado la cantidad de conductas disruptivas. Quieren calcular estadísticamente qué tan de acuerdo están sus evaluaciones.»", 
         "respuesta": "Kappa de Cohen", 
-        "distractores": ["Alfa de Cronbach", "T-Student para muestras independientes", "Correlación de Pearson"]}
+        "distractores": ["Alfa de Cronbach", "T-Student para muestras independientes", "Correlación de Pearson"]
+    }
 ]
 
-DATOS_CAOS= {
+DATOS_CAOS = {
     # ---------------------------------------------------------
     # INSTRUMENTOS Y PSICOMETRÍA
     # ---------------------------------------------------------
     "Examen Mental": {
         "area": "Evaluación Psicológica", 
-        "correctos": ["Aspecto físico y conducta motora", "Forma y curso del pensamiento", "Alciones de la percepción", "Nivel de Insight"]
+        "correctos": ["Aspecto físico y conducta motora", "Forma y curso del pensamiento", "Alteraciones de la percepción", "Nivel de Insight"]
     },
     "WISC-IV (Índices)": {
         "area": "Evaluación Psicológica", 
@@ -649,7 +651,7 @@ DATOS_CAOS= {
         "area": "Intervención", 
         "correctos": ["Primaria (Prevención en población sana)", "Secundaria (Detección y tratamiento temprano)", "Terciaria (Rehabilitación)", "Evitar secuelas crónicas y recaídas"]
     },
-    "pia Cognitivo Conductual (TCC)": {
+    "Terapia Cognitivo Conductual (TCC)": {
         "area": "Intervención", 
         "correctos": ["Reestructuración de pensamientos irracionales", "Exposición y prevención de respuesta (EPR)", "Desensibilización Sistemática", "Registro de conductas (Autorregistros)"]
     },
@@ -657,35 +659,35 @@ DATOS_CAOS= {
         "area": "Intervención", 
         "correctos": ["Transferencia y Contratransferencia", "Análisis de Mecanismos de Defensa", "Inconsciente y resistencia", "Asociación Libre"]
     },
-    "pia Humanista": {
+    "Terapia Humanista": {
         "area": "Intervención", 
         "correctos": ["Empatía clínica profunda", "Aceptación positiva incondicional", "Reflejo emocional", "Modelo centrado en el cliente de Rogers"]
     },
-    "pia Gestalt": {
+    "Terapia Gestalt": {
         "area": "Intervención", 
         "correctos": ["Fomento del Darse Cuenta (Awareness)", "Técnica de la Silla Vacía", "Focalización en el Aquí y Ahora", "Resolución de asuntos inconclusos"]
     },
-    "pia Sistémica": {
+    "Terapia Sistémica": {
         "area": "Intervención", 
         "correctos": ["Identificación de triangulación patológica", "Manejo de límites difusos o aglutinados", "Concepto de Paciente Identificado", "Elaboración e interpretación de Genograma"]
     },
-    "pia Racional Emotiva Conductual (TREC)": {
+    "Terapia Racional Emotiva Conductual (TREC)": {
         "area": "Intervención", 
         "correctos": ["Modelo teórico A-B-C", "Identificación de creencias irracionales centrales", "Técnica de disputa socrática", "Teoría desarrollada por Albert Ellis"]
     },
-    "pia Breve Centrada en Soluciones": {
+    "Terapia Breve Centrada en Soluciones": {
         "area": "Intervención", 
         "correctos": ["Técnica de la Pregunta Milagro", "Búsqueda activa de Excepciones", "Uso de Preguntas de Escalamiento", "Modelo originado por Steve de Shazer"]
     },
-    "pia de Aceptación y Compromiso (ACT)": {
+    "Terapia de Aceptación y Compromiso (ACT)": {
         "area": "Intervención", 
         "correctos": ["Promoción de la flexibilidad psicológica", "Técnicas de defusión cognitiva", "Atención plena al momento presente (Mindfulness)", "Compromiso con valores personales"]
     },
-    "pia Dialéctica Conductual (DBT)": {
+    "Terapia Dialéctica Conductual (DBT)": {
         "area": "Intervención", 
         "correctos": ["Modelo creado por Marsha Linehan", "Entrenamiento en regulación emocional", "Entrenamiento en tolerancia al malestar", "Validación clínica profunda"]
     },
-    "pia Narrativa": {
+    "Terapia Narrativa": {
         "area": "Intervención", 
         "correctos": ["Modelo desarrollado por Michael White", "Externalización del síntoma o problema", "Creación de historias alternativas", "Uso de testigos externos"]
     },
