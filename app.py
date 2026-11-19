@@ -209,7 +209,7 @@ with st.sidebar:
         st.session_state.clear()
         st.rerun()
 
-    # --- FEEDBACK / REPORTE DE ERRORES POR CORREO ---
+    # --- FEEDBACK / REPORTE DE ERRORES POR GMAIL (SMTP) ---
     st.markdown("---")
     with st.expander("🛠️ Reportar Error o Feedback"):
         tipo_seccion = st.selectbox("Sección afectada:", ["Simulacro / Pregunta", "Minijuego", "General"])
@@ -225,32 +225,33 @@ with st.sidebar:
         
         if st.button("Enviar Reporte", use_container_width=True):
             if detalle_comentario.strip():
-                import urllib.request
-                import urllib.parse
-                import json
-
-                CORREO_DESTINO = "dilan4869@gmail.com"  # <-- correo de alertas
-                url = f"https://formsubmit.co/ajax/{CORREO_DESTINO}"
-                
-                usuario_reporta = perfil.get("username", "Sustentante") if perfil else "Anónimo"
-                datos_correo = {
-                    "_subject": f"🚨 Feedback Simulador EGEL: {tipo_seccion}",
-                    "Usuario": usuario_reporta,
-                    "Seccion": tipo_seccion,
-                    "Tipo_de_Detalle": tipo_problema,
-                    "Mensaje": detalle_comentario
-                }
+                import smtplib
+                from email.mime.text import MIMEText
 
                 try:
-                    data = urllib.parse.urlencode(datos_correo).encode("utf-8")
-                    req = urllib.request.Request(url, data=data, headers={"Accept": "application/json", "User-Agent": "Mozilla/5.0"})
-                    with urllib.request.urlopen(req, timeout=10) as resp:
-                        if resp.status == 200:
-                            st.success("¡Reporte enviado con éxito!")
-                        else:
-                            st.error("Hubo un problema al enviar el correo. Intenta más tarde.")
+                    remitente = st.secrets["EMAIL_EMISOR"]
+                    clave_app = st.secrets["EMAIL_PASS"]
+                    usuario_reporta = perfil.get("username", "Sustentante") if perfil else "Anónimo"
+
+                    cuerpo = (
+                        f"Usuario: {usuario_reporta}\n"
+                        f"Sección: {tipo_seccion}\n"
+                        f"Tipo de detalle: {tipo_problema}\n\n"
+                        f"Comentario:\n{detalle_comentario}"
+                    )
+
+                    msg = MIMEText(cuerpo, "plain", "utf-8")
+                    msg["Subject"] = f"🚨 Feedback Simulador EGEL: {tipo_seccion}"
+                    msg["From"] = remitente
+                    msg["To"] = remitente  # Te lo envías a ti mismo
+
+                    with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=10) as server:
+                        server.login(remitente, clave_app)
+                        server.send_message(msg)
+
+                    st.success("¡Reporte enviado a tu correo con éxito!")
                 except Exception as e:
-                    st.error(f"Error de conexión al enviar reporte: {e}")
+                    st.error(f"No se pudo enviar el correo: {e}")
             else:
                 st.warning("Escribe una breve descripción antes de enviar.")
 
