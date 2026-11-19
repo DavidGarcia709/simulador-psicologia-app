@@ -244,7 +244,7 @@ with st.sidebar:
                     req = urllib.request.Request(url, data=data, headers={"Accept": "application/json", "User-Agent": "Mozilla/5.0"})
                     with urllib.request.urlopen(req, timeout=10) as resp:
                         if resp.status == 200:
-                            st.success("¡Reporte enviado a tu correo con éxito!")
+                            st.success("¡Reporte enviado a con éxito!")
                         else:
                             st.error("Hubo un problema al enviar el correo. Intenta más tarde.")
                 except Exception as e:
