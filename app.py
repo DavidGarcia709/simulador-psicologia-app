@@ -358,22 +358,22 @@ if st.session_state.caso_activo is None:
         c_pet, c_store = st.columns([1, 1.5])
         ts = st.session_state.tamagotchi_stats
         with c_pet:
-            emo = "🐱" if ts["hambre"] > 40 and ts["felicidad"] > 40 else "🐱💤" if ts["hambre"] <= 20 else "🐱💔"
+            emo = "🐱" if ts["satisfacción"] > 40 and ts["felicidad"] > 40 else "🐱💤" if ts["hambre"] <= 20 else "🐱💔"
             st.markdown(f"<div style='font-size: 100px; text-align: center; padding: 20px; background: {tema['card_bg']}; border-radius: 15px; border: 2px solid {tema['primary']}; box-shadow: 0 0 15px {tema['glow']};'>{emo}</div>", unsafe_allow_html=True)
-            st.write("**Hambre:**"); st.progress(ts["hambre"]/100.0)
+            st.write("**Satisfacción:**"); st.progress(ts["satisfacción"]/100.0)
             st.write("**Felicidad:**"); st.progress(ts["felicidad"]/100.0)
         with c_store:
             st.subheader("🏪 Tienda")
             c1, c2 = st.columns(2)
             with c1:
                 with st.container(border=True):
-                    st.write("🍎 **Manzana** (Hambre +20)")
+                    st.write("🐟 **Comida** (Satisfacción +20)")
                     if st.button("Comprar 💰 10"):
-                        if st.session_state.psicopesos >= 10: actualizar_psicopesos(-10); ts["hambre"] = min(100, ts["hambre"]+20); st.rerun()
+                        if st.session_state.psicopesos >= 10: actualizar_psicopesos(-10); ts["satisfacción"] = min(100, ts["satisfacción"]+20); st.rerun()
                         else: st.error("Sin saldo")
             with c2:
                 with st.container(border=True):
-                    st.write("📖 **Libro** (Fel. +30)")
+                    st.write("🧶 **Juguete** (Fel. +30)")
                     if st.button("Comprar 💰 25"):
                         if st.session_state.psicopesos >= 25: actualizar_psicopesos(-25); ts["felicidad"] = min(100, ts["felicidad"]+30); st.rerun()
                         else: st.error("Sin saldo")
