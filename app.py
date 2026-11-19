@@ -185,6 +185,7 @@ else:
     rango_text = "🛡️ Sustentante Novato"
     xp_sig = 500
     progreso = max(0.0, min(xp_actual / 500.0, 1.0))
+    
     bg_avatar = f"linear-gradient(135deg, {tema['bg']}, {tema['card_bg']})"
 
     st.markdown(f"""
