@@ -259,7 +259,7 @@ with st.sidebar:
 # PANTALLA DE LOGIN
 # =========================================================================
 if not st.session_state.logged_in:
-    st.markdown("<h1 style='text-align: center;'>🧠 Simulador Clínico Profesional</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center;'>🧠 Simulador Psicología</h1>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         tab1, tab2 = st.tabs(["🔑 Iniciar Sesión", "📝 Registrarse"])
