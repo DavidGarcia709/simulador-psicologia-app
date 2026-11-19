@@ -154,38 +154,41 @@ with st.sidebar:
     xp_actual = perfil.get('xp_total', 0) if perfil else 0
     nivel = min(5, max(1, xp_actual // 500 + 1))
     
-    # Sistema de 5 Niveles y Rangos Oficiales (Curva Progresiva)
-if xp_actual >= 5000:
-    nivel = 5
-    halo_color = "#fbbf24"
-    rango_text = "✨ Sustentante Élite"
-    xp_sig = 5000
-    progreso = 1.0
-elif xp_actual >= 3000:
-    nivel = 4
-    halo_color = "#a855f7"
-    rango_text = "🔮 Sustentante Avanzado Élite"
-    xp_sig = 5000
-    progreso = max(0.0, min((xp_actual - 3000) / 2000.0, 1.0))
-elif xp_actual >= 1500:
-    nivel = 3
-    halo_color = "#8b5cf6"
-    rango_text = "🔮 Sustentante Avanzado"
-    xp_sig = 3000
-    progreso = max(0.0, min((xp_actual - 1500) / 1500.0, 1.0))
-elif xp_actual >= 500:
-    nivel = 2
-    halo_color = "#0ea5e9"
-    rango_text = "🛡️ Sustentante Novato Avanzado"
-    xp_sig = 1500
-    progreso = max(0.0, min((xp_actual - 500) / 1000.0, 1.0))
-else:
-    nivel = 1
-    halo_color = "#38bdf8"
-    rango_text = "🛡️ Sustentante Novato"
-    xp_sig = 500
-    progreso = max(0.0, min(xp_actual / 500.0, 1.0))
-    
+    with st.sidebar:
+    # ... tu código de Personalización Libre ...
+
+    # Sistema de 5 Niveles y Rangos Oficiales (con 4 espacios de sangría)
+    if xp_actual >= 5000:
+        nivel = 5
+        halo_color = "#fbbf24"
+        rango_text = "✨ Sustentante Élite"
+        xp_sig = 5000
+        progreso = 1.0
+    elif xp_actual >= 3000:
+        nivel = 4
+        halo_color = "#a855f7"
+        rango_text = "🔮 Sustentante Avanzado Élite"
+        xp_sig = 5000
+        progreso = max(0.0, min((xp_actual - 3000) / 2000.0, 1.0))
+    elif xp_actual >= 1500:
+        nivel = 3
+        halo_color = "#8b5cf6"
+        rango_text = "🔮 Sustentante Avanzado"
+        xp_sig = 3000
+        progreso = max(0.0, min((xp_actual - 1500) / 1500.0, 1.0))
+    elif xp_actual >= 500:
+        nivel = 2
+        halo_color = "#0ea5e9"
+        rango_text = "🛡️ Sustentante Novato Avanzado"
+        xp_sig = 1500
+        progreso = max(0.0, min((xp_actual - 500) / 1000.0, 1.0))
+    else:
+        nivel = 1
+        halo_color = "#38bdf8"
+        rango_text = "🛡️ Sustentante Novato"
+        xp_sig = 500
+        progreso = max(0.0, min(xp_actual / 500.0, 1.0))
+
     bg_avatar = f"linear-gradient(135deg, {tema['bg']}, {tema['card_bg']})"
 
     st.markdown(f"""
