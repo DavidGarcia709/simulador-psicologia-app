@@ -7,6 +7,8 @@ import datos_juego as dj
 from motor_logico import MotorLogicoEgerina
 from streamlit_cookies_controller import CookieController
 import random
+import urllib.request
+import urllib.parse
 
 st.set_page_config(page_title="Simulador Clínico Profesional", page_icon="🧠", layout="wide", initial_sidebar_state="expanded")
 controller = CookieController()
